@@ -62,7 +62,7 @@ public class Solution {
         }
 
         private static Group get(int index) {
-            while (groups[index].count == null)
+            while (groups[index].count == 0)
                 groups[index] = groups[groups[index].first];
             return groups[index];
         }
@@ -91,7 +91,7 @@ public class Solution {
 
     private static class Group {
         public int first;
-        public Integer count;
+        public int count;
 
         public Group(int first) {
             this.first = first;
@@ -100,7 +100,7 @@ public class Solution {
 
         public void mergeFrom(Group from) {
             this.count += from.count;
-            from.count = null;
+            from.count = 0;
             from.first = this.first;
         }
     }

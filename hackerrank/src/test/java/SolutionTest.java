@@ -37,7 +37,6 @@ public class SolutionTest {
     @Test
     public void test0() throws IOException {
         test("euler186", 0);
-
     }
 
     private void test(String name, int testIndex) {
