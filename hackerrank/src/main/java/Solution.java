@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Solution {
@@ -68,10 +69,14 @@ public class Solution {
     }
 
     private static class S {
-        private static Integer[] cache = new Integer[10_000_000];
+        private static int[] cache = new int[10_000_000];
+
+        static {
+            Arrays.fill(cache, -1);
+        }
 
         public static int s(int k) {
-            if (cache[k] == null)
+            if (cache[k] == -1)
                 cache[k] = getS(k);
             return cache[k];
         }
@@ -80,7 +85,7 @@ public class Solution {
             if (k >= 1 && k <= 55)
                 return (int) ((100_003L - 200_003L * k + 300_007L * k * k * k) % 1_000_000);
             else
-                return (s(k - 24) + s(k - 55)) % 1_000_000;
+                return (cache[k - 24] + cache[k - 55]) % 1_000_000;
         }
     }
 
