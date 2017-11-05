@@ -39,30 +39,30 @@ public class Solution {
             ++misdials;
             return;
         }
-        while (groups[from].count == null)
-            groups[from] = groups[groups[from].first];
-        while (groups[to].count == null)
-            groups[to] = groups[groups[to].first];
-        while (groups[primeMinisterNumber].count == null)
-            groups[primeMinisterNumber] = groups[groups[primeMinisterNumber].first];
-
-        Group oldGroup = groups[from];
-        Group newGroup = groups[to];
-        if (oldGroup == newGroup) {
+        Group oldGroup = getGroup(from);
+        Group newGroup = getGroup(to);
+        if (oldGroup == newGroup)
             return;
-        }
+
         newGroup.count += oldGroup.count;
         oldGroup.count = null;
         oldGroup.first = newGroup.first;
         groups[from] = newGroup;
 
-        if (groups[primeMinisterNumber] == newGroup || groups[primeMinisterNumber] == oldGroup) {
-            double percentage = 100.0 * groups[primeMinisterNumber].count / groups.length;
+        Group pmGroup = getGroup(primeMinisterNumber);
+        if (pmGroup == newGroup) {
+            double percentage = 100.0 * pmGroup.count / groups.length;
             if (percentage > p) {
                 System.out.println(i - misdials);
                 throw new Finished();
             }
         }
+    }
+
+    private static Group getGroup(int index) {
+        while (groups[index].count == null)
+            groups[index] = groups[groups[index].first];
+        return groups[index];
     }
 
     private static Integer[] cache = new Integer[10_000_000];
