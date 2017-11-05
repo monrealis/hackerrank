@@ -33,8 +33,8 @@ public class Solution {
     }
 
     private static void iterate(int i) throws Finished {
-        int from = s(2 * i - 1);
-        int to = s(2 * i);
+        int from = S.s(2 * i - 1);
+        int to = S.s(2 * i);
         if (from == to) {
             ++misdials;
             return;
@@ -65,19 +65,21 @@ public class Solution {
         return groups[index];
     }
 
-    private static Integer[] cache = new Integer[10_000_000];
+    private static class S {
+        private static Integer[] cache = new Integer[10_000_000];
 
-    private static int s(int k) {
-        if (cache[k] != null)
+        public static int s(int k) {
+            if (cache[k] == null)
+                cache[k] = getS(k);
             return cache[k];
-        if (k >= 1 && k <= 55) {
-            int r = (int) ((100_003L - 200_003L * k + 300_007L * k * k * k) % 1_000_000);
-            cache[k] = r;
-            return r;
         }
-        int r = (s(k - 24) + s(k - 55)) % 1_000_000;
-        cache[k] = r;
-        return r;
+
+        private static int getS(int k) {
+            if (k >= 1 && k <= 55)
+                return (int) ((100_003L - 200_003L * k + 300_007L * k * k * k) % 1_000_000);
+            else
+                return (s(k - 24) + s(k - 55)) % 1_000_000;
+        }
     }
 
     private static class Group {
