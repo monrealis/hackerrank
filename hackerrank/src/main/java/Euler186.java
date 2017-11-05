@@ -1,7 +1,7 @@
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class Solution {
+public class Euler186 {
     private static int primeMinisterNumber;
     private static int p;
     private static int misdials;

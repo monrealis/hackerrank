@@ -16,7 +16,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class SolutionTest {
+public class Euler186Test {
     private InputStream originalIn;
     private PrintStream originalOut;
     private ByteArrayOutputStream programOutput;
@@ -63,7 +63,7 @@ public class SolutionTest {
     }
 
     private void main() {
-        Solution.main(new String[] {});
+        Euler186.main(new String[] {});
     }
 
     private String load(Path path) {
