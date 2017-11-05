@@ -4,11 +4,10 @@ public class Solution {
     private static int primeMinisterNumber;
     private static int p;
     private static int misdials;
-    private static Group[] groups = new Group[1_000_000];
 
-    static {
-        for (int i = 0; i < groups.length; ++i)
-            groups[i] = new Group(i);
+    public static void main(String[] args) {
+        load();
+        iterate();
     }
 
     private static void load() {
@@ -16,11 +15,6 @@ public class Solution {
             primeMinisterNumber = s.nextInt();
             p = s.nextInt();
         }
-    }
-
-    public static void main(String[] args) {
-        load();
-        iterate();
     }
 
     private static void iterate() {
@@ -39,30 +33,38 @@ public class Solution {
             ++misdials;
             return;
         }
-        Group oldGroup = getGroup(from);
-        Group newGroup = getGroup(to);
+        Group oldGroup = Groups.get(from);
+        Group newGroup = Groups.get(to);
         if (oldGroup == newGroup)
             return;
+        newGroup.mergeFrom(oldGroup);
+        mergeGroups(i, newGroup);
+    }
 
-        newGroup.count += oldGroup.count;
-        oldGroup.count = null;
-        oldGroup.first = newGroup.first;
-        groups[from] = newGroup;
-
-        Group pmGroup = getGroup(primeMinisterNumber);
-        if (pmGroup == newGroup) {
-            double percentage = 100.0 * pmGroup.count / groups.length;
-            if (percentage > p) {
-                System.out.println(i - misdials);
-                throw new Finished();
-            }
+    private static void mergeGroups(int i, Group newGroup) throws Finished {
+        Group pmGroup = Groups.get(primeMinisterNumber);
+        if (pmGroup != newGroup)
+            return;
+        double percentage = 100.0 * pmGroup.count / Groups.groups.length;
+        if (percentage > p) {
+            System.out.println(i - misdials);
+            throw new Finished();
         }
     }
 
-    private static Group getGroup(int index) {
-        while (groups[index].count == null)
-            groups[index] = groups[groups[index].first];
-        return groups[index];
+    public static class Groups {
+        private static Group[] groups = new Group[1_000_000];
+
+        static {
+            for (int i = 0; i < groups.length; ++i)
+                groups[i] = new Group(i);
+        }
+
+        private static Group get(int index) {
+            while (groups[index].count == null)
+                groups[index] = groups[groups[index].first];
+            return groups[index];
+        }
     }
 
     private static class S {
@@ -89,6 +91,12 @@ public class Solution {
         public Group(int first) {
             this.first = first;
             this.count = 1;
+        }
+
+        public void mergeFrom(Group from) {
+            this.count += from.count;
+            from.count = null;
+            from.first = this.first;
         }
     }
 
