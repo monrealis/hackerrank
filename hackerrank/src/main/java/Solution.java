@@ -57,16 +57,18 @@ public class Solution {
     private static Integer[] cache = new Integer[10_000_000];
 
     private static int s(int k) {
-        System.out.println(k);
+        if (cache[k] != null)
+            return cache[k];
         if (k >= 1 && k <= 55) {
-            if (cache[k] != null)
-                return cache[k];
             int r = (int) ((100_003L - 200_003L * k + 300_007L * k * k * k) % 1_000_000);
             cache[k] = r;
             return r;
+        } else if (k >= 56) {
+            int r = (s(k - 24) + s(k - 55)) % 1_000_000;
+            cache[k] = r;
+            return r;
         }
-        int r = (cache[k - 24] + cache[k - 55]) % 1_000_000;
-        return r;
+        throw new IllegalArgumentException();
     }
 
     private static class Group {
