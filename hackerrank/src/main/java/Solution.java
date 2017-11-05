@@ -38,13 +38,13 @@ public class Solution {
         Group newGroup = Groups.get(to);
         if (oldGroup == newGroup)
             return;
-        newGroup.mergeFrom(oldGroup);
-        mergeGroups(i, newGroup);
+        Group g = merge(oldGroup, newGroup);
+        check(i, g);
     }
 
-    private static void mergeGroups(int i, Group newGroup) throws Finished {
+    private static void check(int i, Group group) throws Finished {
         Group pmGroup = Groups.get(primeMinisterNumber);
-        if (pmGroup != newGroup)
+        if (pmGroup != group)
             return;
         double percentage = 100.0 * pmGroup.count / Groups.groups.length;
         if (percentage > p) {
@@ -89,6 +89,21 @@ public class Solution {
         }
     }
 
+    private static Group merge(Group g1, Group g2) {
+        if (g1.count > g2.count) {
+            g1.count += g2.count;
+            g2.count = 0;
+            g2.first = g1.first;
+            return g1;
+        } else {
+            g2.count += g1.count;
+            g1.count = 0;
+            g1.first = g2.first;
+            return g2;
+        }
+
+    }
+
     private static class Group {
         public int first;
         public int count;
@@ -96,12 +111,6 @@ public class Solution {
         public Group(int first) {
             this.first = first;
             this.count = 1;
-        }
-
-        public void mergeFrom(Group from) {
-            this.count += from.count;
-            from.count = 0;
-            from.first = this.first;
         }
     }
 
