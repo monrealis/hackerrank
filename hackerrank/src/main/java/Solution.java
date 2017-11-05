@@ -11,47 +11,58 @@ public class Solution {
             groups[i] = new Group(i);
     }
 
-    public static void main(String[] args) {
+    private static void load() {
         try (Scanner s = new Scanner(System.in)) {
             primeMinisterNumber = s.nextInt();
             p = s.nextInt();
         }
+    }
 
-        for (int i = 1;; ++i) {
-            int from = s(2 * i - 1);
-            int to = s(2 * i);
-            if (from == to) {
-                ++misdials;
-                continue;
+    public static void main(String[] args) {
+        load();
+        iterate();
+    }
+
+    private static void iterate() {
+        for (int i = 1;; ++i)
+            try {
+                iterate(i);
+            } catch (Finished e) {
+                return;
             }
-            while (groups[from].count == null)
-                groups[from] = groups[groups[from].first];
-            while (groups[to].count == null)
-                groups[to] = groups[groups[to].first];
-            while (groups[primeMinisterNumber].count == null)
-                groups[primeMinisterNumber] = groups[groups[primeMinisterNumber].first];
+    }
 
-            Group oldGroup = groups[from];
-            Group newGroup = groups[to];
-            if (oldGroup == newGroup) {
-                continue;
-            }
-            newGroup.count += oldGroup.count;
-            oldGroup.count = null;
-            oldGroup.first = newGroup.first;
-            groups[from] = newGroup;
-
-            if (groups[primeMinisterNumber] == newGroup || groups[primeMinisterNumber] == oldGroup) {
-                double percentage = 100.0 * groups[primeMinisterNumber].count / groups.length;
-                if (percentage > p) {
-                    System.out.println(i - misdials);
-                    break;
-                }
-
-            }
-
+    private static void iterate(int i) throws Finished {
+        int from = s(2 * i - 1);
+        int to = s(2 * i);
+        if (from == to) {
+            ++misdials;
+            return;
         }
+        while (groups[from].count == null)
+            groups[from] = groups[groups[from].first];
+        while (groups[to].count == null)
+            groups[to] = groups[groups[to].first];
+        while (groups[primeMinisterNumber].count == null)
+            groups[primeMinisterNumber] = groups[groups[primeMinisterNumber].first];
 
+        Group oldGroup = groups[from];
+        Group newGroup = groups[to];
+        if (oldGroup == newGroup) {
+            return;
+        }
+        newGroup.count += oldGroup.count;
+        oldGroup.count = null;
+        oldGroup.first = newGroup.first;
+        groups[from] = newGroup;
+
+        if (groups[primeMinisterNumber] == newGroup || groups[primeMinisterNumber] == oldGroup) {
+            double percentage = 100.0 * groups[primeMinisterNumber].count / groups.length;
+            if (percentage > p) {
+                System.out.println(i - misdials);
+                throw new Finished();
+            }
+        }
     }
 
     private static Integer[] cache = new Integer[10_000_000];
@@ -63,12 +74,10 @@ public class Solution {
             int r = (int) ((100_003L - 200_003L * k + 300_007L * k * k * k) % 1_000_000);
             cache[k] = r;
             return r;
-        } else if (k >= 56) {
-            int r = (s(k - 24) + s(k - 55)) % 1_000_000;
-            cache[k] = r;
-            return r;
         }
-        throw new IllegalArgumentException();
+        int r = (s(k - 24) + s(k - 55)) % 1_000_000;
+        cache[k] = r;
+        return r;
     }
 
     private static class Group {
@@ -79,5 +88,8 @@ public class Solution {
             this.first = first;
             this.count = 1;
         }
+    }
+
+    private static class Finished extends Exception {
     }
 }
